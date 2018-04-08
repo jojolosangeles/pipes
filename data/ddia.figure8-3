@@ -1,0 +1,12 @@
+entities Client A, Node 1/2/3, Client B
+N1.float3.T=42.003
+N2.float3.T=41.999
+N3.float3.T=42.000
+cA (1)x=1 n1
+n1 (1)ok cA
+n1 (1)* n3
+n1 (4)* n2
+(2)cB idle
+cB (1)x+=1 n3
+n3 (1)ok cB
+n3 (1)* n1,n2

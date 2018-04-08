@@ -1,0 +1,28 @@
+entities Client A, Node 1/2/3, Client B
+{"command": "create_entity", "name": "Client", "id": "A"}
+{"command": "create_entity", "name": "Node", "id": "1"}
+{"command": "create_entity", "name": "Node", "id": "2"}
+{"command": "create_entity", "name": "Node", "id": "3"}
+{"command": "create_entity", "name": "Client", "id": "B"}
+N1.float3.T=42.003
+{"command": "set_key_value", "type": "float", "precision": "3", "field_name": "N1.T", "value": 42.003}
+N2.float3.T=41.999
+{"command": "set_key_value", "type": "float", "precision": "3", "field_name": "N2.T", "value": 41.999}
+N3.float3.T=42.000
+{"command": "set_key_value", "type": "float", "precision": "3", "field_name": "N3.T", "value": 42.0}
+cA (1)x=1 n1
+{"command": "send_message", "from_entity": "cA", "delay": 1, "message": "x=1", "to_entity": "n1"}
+n1 (1)ok cA
+{"command": "send_message", "from_entity": "n1", "delay": 1, "message": "ok", "to_entity": "cA"}
+n1 (1)* n3
+{"command": "send_message", "from_entity": "n1", "delay": 1, "message": "x=1", "to_entity": "n3"}
+n1 (4)* n2
+{"command": "send_message", "from_entity": "n1", "delay": 4, "message": "x=1", "to_entity": "n2"}
+(2)cB idle
+cB (1)x+=1 n3
+{"command": "send_message", "from_entity": "cB", "delay": 1, "message": "x+=1", "to_entity": "n3"}
+n3 (1)ok cB
+{"command": "send_message", "from_entity": "n3", "delay": 1, "message": "ok", "to_entity": "cB"}
+n3 (1)* n1,n2
+{"command": "send_message", "from_entity": "n3", "delay": 1, "message": "x+=1", "to_entity": "n1"}
+{"command": "send_message", "from_entity": "n3", "delay": 1, "message": "x+=1", "to_entity": "n2"}
