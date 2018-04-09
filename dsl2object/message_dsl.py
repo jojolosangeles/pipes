@@ -9,7 +9,7 @@ class MessageDSL(BaseProcessor):
         super()
         self.last_message_received = {}  # "*" for message uses value from here
 
-    def process(self, data):
+    def process(self, data, originating_event_id):
         """Convert a list of tokens into a list of instances.
         Syntax we are looking for:
 
@@ -20,29 +20,19 @@ class MessageDSL(BaseProcessor):
 
         s = re.search( r'\((\d+)\)(.*)', data[1], re.M|re.I)
         try:
-            print("HERE")
             delay = int(s.group(1))
-            print("B")
             message = s.group(2)
-            print("C")
             if message == "*":
-                print("D")
                 message = self.last_message_received[data[0]]
             for dest in data[2].split(","):
-                message_event = MessageEvent(data[0], delay, message, dest)
+                message_event = MessageEvent(data[0], delay, message, dest, originating_event_id)
                 self.last_message_received[dest] = message
-                print("G")
-                print("{}_to_{}".format(data[0], dest))
-                print("G2")
-                self.monitor_event(message_event, "{}_to_{}".format(data[0], dest))
-                print("H")
+                self.monitor_event(message_event)
                 self.output_stream.write(json.dumps(vars(message_event)))
-                print("I")
         except:
-            print("WTF, got an exception!!!")
             pass
 
-    def process_line(self, line):
+    def process_line(self, line, originating_event_id):
         data = line.split()
         if len(data) == 3:
-            self.process(data)
+            self.process(data, originating_event_id)

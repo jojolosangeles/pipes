@@ -1,41 +1,42 @@
-class BaseEvent:
-    genId = 0
+global_event_id = 0
 
-    def __init__(self):
+class BaseEvent:
+
+    def __init__(self, command_key, originating_event_id):
         self.event_id = self.genIdValue()
+        self.originating_event_id = originating_event_id
+        self.command = command_key
 
     @classmethod
     def genIdValue(cls):
-        cls.genId += 1
-        return cls.genId
+        global global_event_id
+        global_event_id += 1
+        return global_event_id
 
 class EntityEvent(BaseEvent):
-
-    def __init__(self, name, id):
-        super()
-        self.command = 'create_entity'
+    COMMAND_KEY = 'create_entity'
+    def __init__(self, name, originating_event_id):
+        super().__init__(self.COMMAND_KEY, originating_event_id)
         self.name = name
-        self.id = id
 
 
 class FloatEvent(BaseEvent):
-
-    def __init__(self, field_name, type, precision, value):
-        super()
-        self.command = 'set_key_value'
+    COMMAND_KEY = 'set_key_value'
+    def __init__(self, field_name, type, precision, value, originating_event_id):
+        super().__init__(self.COMMAND_KEY, originating_event_id)
         self.type = type
         self.precision = precision
         self.field_name = field_name
+        self.originating_event_id = originating_event_id
         if type == 'float':
             self.value = float(value)
         else:
             self.value = value
 
 class MessageEvent(BaseEvent):
-
-    def __init__(self, from_entity, delay, message, to_entity):
-        super()
-        self.command = 'send_message'
+    COMMAND_KEY = 'send_message'
+    def __init__(self, from_entity, delay, message, to_entity, originating_event_id):
+        super().__init__(self.COMMAND_KEY, originating_event_id)
         self.from_entity = from_entity
         self.delay = delay
         self.message = message

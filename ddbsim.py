@@ -51,15 +51,17 @@ class LineProcessor:
         self.processors.append(processor)
 
     def run(self):
+        line_id = 0
         for line in self.input_stream.stream:
+            line_id += 1
             for processor in self.processors:
-                processor.process_line(line)
+                processor.process_line(line, line_id)
 
 class MonitorEvent:
     """Container for monitoring data.
     The Monitoring events (one type):
         type: 'sent' or 'received'
-        trace: <originating event ID> so we can trace an event through system
+        originating_event_id: <originating event ID> so we can trace an event through system
         sender: <sender ID>
         channel: <channel ID>
         event: <event ID>
@@ -77,11 +79,11 @@ class MonitorEvent:
         cls.idgen += 1
         return cls.idgen
 
-    def __init__(self, type, senderId, eventId, outputChannelId, msTime, traceId):
+    def __init__(self, type, originating_event_id, outputChannelId, msTime, traceId):
         self.type = type
-        self.traceId = traceId
+        self.originating_event_id = traceId
         self.outputChannelId = outputChannelId
-        self.eventId = eventId
+        self.originating_event_id = originating_event_id
         self.msTime = msTime
 
 class MonitoredStream:
@@ -94,16 +96,16 @@ class MonitoredStream:
         self.stream.write(s)
         self.stream.write("\n")
 
-    def monitor_send(self, line, output_stream_id):
+    def monitor_send(self, line, output_stream_id, line_id):
         eventId = MonitorEvent.genId()
-        event = MonitorEvent(MonitorEvent.SENT, MonitorEvent.TEXT_SENDER, eventId,
-                             output_stream_id, round(time.time()*1000), eventId)
+        event = MonitorEvent(MonitorEvent.SENT, eventId,
+                             output_stream_id, round(time.time()*1000), line_id)
         self.write(json.dumps(vars(event)))
 
-    def monitor_event(self, event, sender_id, output_stream_id):
+    def monitor_event(self, event, output_stream_id):
         eventId = MonitorEvent.genId()
-        event = MonitorEvent(MonitorEvent.SENT, sender_id, eventId,
-                             output_stream_id, round(time.time()*1000), eventId)
+        event = MonitorEvent(MonitorEvent.SENT, eventId,
+                             output_stream_id, round(time.time()*1000), event.originating_event_id)
         self.write(json.dumps(vars(event)))
 
 INPUT_FILE_NAME = "data/ddia.figure8-3"  #"ddbsim.txt"
