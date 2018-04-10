@@ -27,7 +27,6 @@ class FloatEvent(BaseEvent):
         self.type = type
         self.precision = precision
         self.field_name = field_name
-        self.originating_event_id = originating_event_id
         if type == 'float':
             self.value = float(value)
         else:

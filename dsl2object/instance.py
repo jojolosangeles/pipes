@@ -3,6 +3,12 @@ class Instance:
         self.name = name
         self.identifier = identifier
 
+    def full_name(self):
+        if len(self.identifier) > 0:
+            return "{} {}".format(self.name, self.identifier)
+        else:
+            return self.name
+
 
 class InstanceFactory:
     """Takes a string in format "<first part> <second part>" or "<single part>"

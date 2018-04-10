@@ -40,14 +40,13 @@ time: <sent time>
 class LineProcessor:
     """Process all events, generate monitoring events.
     """
-    def __init__(self, input_stream, output_stream, monitor_stream):
+    def __init__(self, input_stream, output_stream):
         self.input_stream = input_stream
         self.output_stream = output_stream
-        self.monitor_stream = monitor_stream
         self.processors = []
 
     def register(self, processor):
-        processor.set_streams(self.output_stream, self.monitor_stream)
+        processor.set_streams(self.output_stream)
         self.processors.append(processor)
 
     def run(self):
@@ -110,20 +109,18 @@ class MonitoredStream:
 
 INPUT_FILE_NAME = "data/ddia.figure8-3"  #"ddbsim.txt"
 OUTPUT_FILE_NAME = "ddbsim_out.txt"
-MONITOR_FILE_NAME = "ddbsim_monitor.txt"
 
 entity_dsl = EntityDSL()
 entity_time_dsl = EntityTimeDSL()
 message_dsl = MessageDSL()
 echoer = EchoProcessor()
 
-with open(INPUT_FILE_NAME) as input_stream:
-    input = MonitoredStream(input_stream, INPUT_FILE_NAME)
-    with open(OUTPUT_FILE_NAME, "w") as output_stream:
-        output = MonitoredStream(output_stream, OUTPUT_FILE_NAME)
-        with open(MONITOR_FILE_NAME, "w") as monitor_stream:
-            monitor = MonitoredStream(monitor_stream, MONITOR_FILE_NAME)
-            line_processor = LineProcessor(input, output, monitor)
+if __name__ == '__main__':
+    with open(INPUT_FILE_NAME) as input_stream:
+        input = MonitoredStream(input_stream, INPUT_FILE_NAME)
+        with open(OUTPUT_FILE_NAME, "w") as output_stream:
+            output = MonitoredStream(output_stream, OUTPUT_FILE_NAME)
+            line_processor = LineProcessor(input, output)
             line_processor.register(echoer)
             line_processor.register(entity_dsl)
             line_processor.register(entity_time_dsl)

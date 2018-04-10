@@ -21,7 +21,6 @@ class EntityTimeDSL(BaseProcessor):
     def process(self, data, originating_event_id):
         """Process data array containing[ name, type, precision, value ]."""
         float_event = FloatEvent(data[0], data[1], data[2], data[3], originating_event_id)
-        self.monitor_event(float_event)
         self.output_stream.write(json.dumps(vars(float_event)))
 
 
@@ -58,8 +57,7 @@ class EntityDSL(BaseProcessor):
     def process_line(self, line, line_id):
         """Process a line of text, if it's not for this processor, there are no entities to process."""
         for entity in self.process(line.split()):
-            entity_event = EntityEvent(entity.name, line_id)
-            self.monitor_event(entity_event)
+            entity_event = EntityEvent(entity.full_name(), line_id)
             self.output_stream.write(json.dumps(vars(entity_event)))
 
     def createInstances(self, data):

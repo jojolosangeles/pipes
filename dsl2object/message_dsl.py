@@ -27,7 +27,6 @@ class MessageDSL(BaseProcessor):
             for dest in data[2].split(","):
                 message_event = MessageEvent(data[0], delay, message, dest, originating_event_id)
                 self.last_message_received[dest] = message
-                self.monitor_event(message_event)
                 self.output_stream.write(json.dumps(vars(message_event)))
         except:
             pass
