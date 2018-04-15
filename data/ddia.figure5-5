@@ -1,0 +1,11 @@
+# Figure 5-5. If some partitions are replicated slower than others, an observer may see the
+# answer before they see the question
+entities Mr. Poons, Partition 1 Leader/Follower, Mrs. Cake, Partition 2 Leader/Follower, Observer
+mp (1)"How far into the fugure can you see, Mrs. Cake?" p1l
+p1l (1)"" mc
+p1l (5)"" p1f
+mc (1)"About ten seconds usually, Mr. Poons." p2l
+p2l (1)"" mp
+p2l (1)"" p2f
+p2f (1)"About ten seconds usually, Mr. Poons." o
+p1f (1)"How far into the future can you see, Mrs. Cake?" o

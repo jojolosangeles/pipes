@@ -1,0 +1,9 @@
+# Figure 5-3. A user makes a write, followed by a read from a stale replica.  To prevent
+# this anomaly, we need read-after-write consistency.
+entities User 1234, Leader, Follower 1/2
+u1 (1)insert into comments (author,reploy_to,message) values(1234,55555,'Sounds good') l
+l (1)insert ok u1
+l (1)* insert into comments... f1
+l (4)* insert into comments... f2
+u1 (1)select * from comments where reply_to = 55555 f2
+f2 (1)no results u1

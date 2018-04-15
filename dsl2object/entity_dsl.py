@@ -14,13 +14,12 @@ def is_not_digit(s):
 class EntityStateDSL(BaseProcessor):
     def process_line(self, line, line_id):
         data = line.split()
-        if len(data) == 2:
+        if len(data) >= 2:
             s = re.search( r'\((\d+)\)(.*)', data[0], re.M|re.I)
             try:
                 delay = int(s.group(1))
                 entity = s.group(2)
-                print("{} {}".format(delay, entity))
-                stateEvent = StateEvent(entity, data[1], delay, line_id)
+                stateEvent = StateEvent(entity, ' '.join(data[1:]), delay, line_id)
                 self.output_stream.write(json.dumps(vars(stateEvent)))
             except:
                 pass

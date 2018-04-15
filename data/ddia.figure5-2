@@ -1,0 +1,8 @@
+entities User 1234, Leader, Follower 1/2
+u1 (1)update users set picture_url='me-new.jpg' where user_id=1234 l
+(2)waiting for follower's ok l
+l (1)data change f1
+l (3)data change f2
+f1 (1)ok l
+l (1)ok u1
+f2 (1)ok l

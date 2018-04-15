@@ -107,7 +107,7 @@ class MonitoredStream:
                              output_stream_id, round(time.time()*1000), event.originating_event_id)
         self.write(json.dumps(vars(event)))
 
-INPUT_FILE_NAME = "data/ddia.figure8-4"  #"ddbsim.txt"
+INPUT_FILE_NAME = "data/ddia.figure5-5"  #"ddbsim.txt"
 OUTPUT_FILE_NAME = "ddbsim_out.txt"
 
 entity_dsl = EntityDSL()

@@ -1,0 +1,12 @@
+# Figure 5-4. A user first reads from a fresh replica, then from a stale replica.  Time
+# appears to go backward.  To prevent this anomaly, we need monotonic reads.
+entities User 1234, Leader, Follower 1/2, User 2345
+u1 (1)insert into comments(author,reploy_to,message) values(1234,55555,'Sounds good') l
+l (1)insert ok u1
+l (1)insert into comments... f1
+l (5)insert into comments... f2
+u2 (1)select * from comments where reply_to = 55555 f1
+f1 (1)1 result u2
+u2 (1)select * from comments where reply_to = 55555 f2
+f2 (1)no results! u2
+

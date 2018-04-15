@@ -13,7 +13,7 @@ class MessageDSL(BaseProcessor):
         """Convert a list of tokens into a list of instances.
         Syntax we are looking for:
 
-        <entity 1> (transit_time)<message>-> <entity 2>
+        <entity 1> (transit_time)<message> <entity 2>
 
         NodeA (3)x=3 NodeB
         """
@@ -22,9 +22,11 @@ class MessageDSL(BaseProcessor):
         try:
             delay = int(s.group(1))
             message = s.group(2)
+            if len(data) > 3:
+                message = ' '.join([message, *data[2:-1]])
             if message == "*":
                 message = self.last_message_received[data[0]]
-            for dest in data[2].split(","):
+            for dest in data[-1].split(","):
                 message_event = MessageEvent(data[0], delay, message, dest, originating_event_id)
                 self.last_message_received[dest] = message
                 self.output_stream.write(json.dumps(vars(message_event)))
@@ -33,5 +35,5 @@ class MessageDSL(BaseProcessor):
 
     def process_line(self, line, originating_event_id):
         data = line.split()
-        if len(data) == 3:
+        if len(data) >= 3 and data[1][0] == '(':
             self.process(data, originating_event_id)
