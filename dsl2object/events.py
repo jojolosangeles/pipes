@@ -13,6 +13,15 @@ class BaseEvent:
         global_event_id += 1
         return global_event_id
 
+class StateEvent(BaseEvent):
+    COMMAND_KEY = 'set_state'
+
+    def __init__(self, name, state, delay, originating_event_id):
+        super().__init__(self.COMMAND_KEY, originating_event_id)
+        self.name = name
+        self.state = state
+        self.delay = delay
+
 class EntityEvent(BaseEvent):
     COMMAND_KEY = 'create_entity'
     def __init__(self, name, originating_event_id):

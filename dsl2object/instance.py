@@ -12,7 +12,7 @@ class Instance:
 
 class InstanceFactory:
     """Takes a string in format "<first part> <second part>" or "<single part>"
-    and creates an instances."""
+    and creates an array of instances."""
     def createInstances(self,d):
         data = d.split()
         if len(data) == 2:

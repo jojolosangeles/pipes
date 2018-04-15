@@ -1,14 +1,29 @@
 from dsl2object.base_processor import BaseProcessor
-from dsl2object.events import FloatEvent, EntityEvent
+from dsl2object.events import FloatEvent, EntityEvent, StateEvent
 from dsl2object.instance import InstanceFactory
 import json
 import itertools
+import re
 
 def is_not_digit(s):
     try:
         return not str.isdigit(s)
     except:
         return True
+
+class EntityStateDSL(BaseProcessor):
+    def process_line(self, line, line_id):
+        data = line.split()
+        if len(data) == 2:
+            s = re.search( r'\((\d+)\)(.*)', data[0], re.M|re.I)
+            try:
+                delay = int(s.group(1))
+                entity = s.group(2)
+                print("{} {}".format(delay, entity))
+                stateEvent = StateEvent(entity, data[1], delay, line_id)
+                self.output_stream.write(json.dumps(vars(stateEvent)))
+            except:
+                pass
 
 class EntityTimeDSL(BaseProcessor):
     """Set the time for an entity, input line are like this:  "N1.T=42.003"

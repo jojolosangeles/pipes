@@ -2,7 +2,7 @@ import json
 import time
 
 from dsl2object.base_processor import EchoProcessor
-from dsl2object.entity_dsl import EntityDSL, EntityTimeDSL
+from dsl2object.entity_dsl import EntityDSL, EntityTimeDSL, EntityStateDSL
 from dsl2object.message_dsl import MessageDSL
 
 """Distributed system communication simulation, using event sourcing and monitoring.
@@ -107,11 +107,12 @@ class MonitoredStream:
                              output_stream_id, round(time.time()*1000), event.originating_event_id)
         self.write(json.dumps(vars(event)))
 
-INPUT_FILE_NAME = "data/ddia.figure8-3"  #"ddbsim.txt"
+INPUT_FILE_NAME = "data/ddia.figure8-4"  #"ddbsim.txt"
 OUTPUT_FILE_NAME = "ddbsim_out.txt"
 
 entity_dsl = EntityDSL()
 entity_time_dsl = EntityTimeDSL()
+entity_state_dsl = EntityStateDSL()
 message_dsl = MessageDSL()
 echoer = EchoProcessor()
 
@@ -124,5 +125,6 @@ if __name__ == '__main__':
             line_processor.register(echoer)
             line_processor.register(entity_dsl)
             line_processor.register(entity_time_dsl)
+            line_processor.register(entity_state_dsl)
             line_processor.register(message_dsl)
             line_processor.run()
