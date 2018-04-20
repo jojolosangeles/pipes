@@ -1,3 +1,4 @@
+from model.time.clock import Clock
 
 
 class EntityFactory:
@@ -15,18 +16,18 @@ class EntityFactory:
     def find(self, name):
         name = name.lower()
         entity_indexes = [0]*len(self.entities)
-        remaining = list(map(lambda entity: (entity.name, entity.name.lower()), self.entities))
+        name_to_lowercase = list(map(lambda entity: (entity.name, entity.name.lower()), self.entities))
         for letter in name:
-            remaining = list(lambda name: (name[0], self.new_name(letter, name[1])), remaining)
-            remaining = [name for name in remaining if len(name) > 0]
+            name_to_lowercase = list(lambda name: (name[0], self.new_name(letter, name[1])), name_to_lowercase)
+            name_to_lowercase = [name for name in name_to_lowercase if len(name) > 0]
 
-        if len(remaining) == 1:
-            return remaining[0][0]
+        if len(name_to_lowercase) == 1:
+            return name_to_lowercase[0][0]
         else:
             return ""
 
-    def createEntity(self, name, clock, tags=[]):
-        result = Entity(name, clock, tags)
+    def createEntity(self, name, clock=Clock()):
+        result = Entity(name, clock)
         self.entities.append(result)
         return result
 
@@ -45,39 +46,63 @@ class LastWriteWinsAcceptableValueStrategy:
          2. the proposedValue timestamp is newer than the currentValue timestamp."""
         return currentValue == None or proposedValue.timestamp > currentValue.timestamp
 
-class Entity:
-    """An Entity has a name, a clock, and a set of tags for representing
-    things like status or classification."""
-
-    def __init__(self, name, clock, tags, acceptableValueStrategy = DefaultAcceptableValueStrategy()):
-        self.name = name
-        self.clock = clock
-        self.tags = tags
-        self.acceptableValueStrategy = acceptableValueStrategy
-
-        # an entity keeps track of the messages it has sent and received
+class MessageCounter:
+    def __init__(self):
+        """Track messages sent and received."""
         self.sent = 0
         self.received = 0
 
-        # an entity has a key-value store of distributed key-value pairs
+    def received_value(self):
+        self.received += 1
+
+    def sent_value(self):
+        self.sent += 1
+
+class KVStore:
+    def __init__(self, acceptableValueStrategy):
+        self.acceptableValueStrategy = acceptableValueStrategy
         self.kvStore = {}
-        self.rejected = 0  # the key-value settings that were rejected by strategy
+        self.updated = 0
+        self.rejected = 0
+
+    def accept(self, value):
+        if self.acceptableValueStrategy.checkProposedValue(self.kvStore.get(value.name), value):
+            return True
+        else:
+            self.rejected += 1
+            return False
+
+    def __call__(self, key, value=None):
+        if value == None:
+            return self.kvStore[key]
+        elif self.accept(value):
+            self.kvStore[key] = value
+            self.updated += 1
+
+class Entity(MessageCounter):
+    """An Entity has a name, a clock, and a set of tags for representing
+    things like status or classification."""
+
+    def __init__(self, name, clock, acceptableValueStrategy = DefaultAcceptableValueStrategy()):
+        MessageCounter.__init__(self)
+        self.kvStore = KVStore(acceptableValueStrategy)
+        self.name = name
+        self.clock = clock
 
     def process(self, value):
         """A value has a name, a timestamp (optional, used in some
         distribution strategies like last-write-wins), and an actual value."""
-        self.received += 1
+        self.received_value()
 
-        if self.acceptableValueStrategy.checkProposedValue(self.kvStore.get(value.name), value):
-            self.kvStore[value.name] = value
+        if self.kvStore.accept(value):
+            self.kvStore(value.name, value)
+
             # set time if it's not set yet
             if value.timestamp == 0:
                 value.timestamp = self.clock.time()
-        else:
-            self.rejected += 1
 
-    def get(self, key):
-        return self.kvStore.get(key)
+    def __call__(self, key):
+        return self.kvstore(key)
 
     def time(self):
         return self.clock.time()

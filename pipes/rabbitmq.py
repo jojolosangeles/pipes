@@ -1,18 +1,23 @@
 #!/usr/bin/env python
 import pika
 
+def printing_line_callback(line):
+    print(line)
+
 class RabbitMQ:
-    def __init__(self, host, queue):
+    def __init__(self, host, queue, line_callback=printing_line_callback):
         self.host = host
         self.queue = queue
         self.send_callback = self.default_send_callback
         self.receive_callback = self.default_receive_callback
+        self.line_callback = line_callback
 
     def default_send_callback(self, message):
         print(" [x] Sent '{}'".format(message))
 
     def default_receive_callback(self, ch, method, properties, body):
         print(" [x] Received %r" % body)
+        self.line_callback(body.decode("utf-8"))
 
     def send(self, message):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host))
@@ -39,3 +44,5 @@ class RabbitMQ:
 
         print(' [*] Waiting for messages. To exit press CTRL+C')
         channel.start_consuming()
+
+
