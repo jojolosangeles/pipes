@@ -1,7 +1,7 @@
 import sys
 
 from pipes.rabbitmq import RabbitMQ
-
+from pipes.processors.passthrough import PassThrough
 
 class Pipe:
     """A Pipe can only receive on an incoming channel, and send on an outgoing channel.
@@ -87,50 +87,89 @@ class OutRange:
             self.got_output = True
         return False
 
+class UnspecifiedChannel:
+    def __init__(self, params):
+        self.params = params
+
+    def send(self, message):
+        print("UNSPECIFIED SEND CHANNEL: {}".format(self.params))
+
+    def receive(self, line_processor):
+        print("UNSPECIFIED RECEIVE CHANNEL: {}".format(self.params))
+
+
+class Tracer:
+    def __init__(self):
+        self.enabled = True
+
+    def __call__(self, f):
+        def wrap(*args, **kwargs):
+            if self.enabled:
+                print("{}{}".format(f.__name__, args[1:]))
+            return f(*args, **kwargs)
+        return wrap
+
+tracer = Tracer()
+
 class ChannelFactory:
     def __init__(self):
         pass
 
+    @tracer
     def createInputChannel(self, input_channel_params):
-        print("ChannelFactory.createInputChannel {}".format(input_channel_parameters))
         channel_type = input_channel_params[0]
         if channel_type == "stream":
             if input_channel_params[1] == "stdin":
                 return StreamInChannel(sys.stdin)
+            elif input_channel_parameters[1] == "file":
+                return StreamInChannel(open(input_channel_params[2], "r"))
         elif channel_type == "rabbitmq":
             host = input_channel_params[1]
             queue = input_channel_params[2]
-            print("new RabbitMQ({}, {})".format(host, queue))
             return RabbitMQ(host, queue)
+        else:
+            return UnspecifiedChannel(input_channel_params)
 
+    @tracer
     def createOutputChannel(self, output_channel_params):
         channel_type = output_channel_parameters[0]
         if channel_type == "stream":
             if output_channel_parameters[1] == "stdout":
                 return StreamOutChannel(sys.stdout)
+            elif output_channel_parameters[1] == "file":
+                return StreamOutChannel(open(output_channel_parameters[2], "w"))
         elif channel_type == "rabbitmq":
             host = output_channel_parameters[1]
             queue = output_channel_parameters[2]
             return RabbitMQ(host, queue)
+        else:
+            return UnspecifiedChannel(output_channel_params)
 
-class PassThrough:
-    def __init__(self, output_channel):
-        self.output_channel = output_channel
+    def import_module(name):
+        """from https://stackoverflow.com/questions/547829/how-to-dynamically-load-a-python-class?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+        """
+        components = name.split('.')
+        mod = __import__(components[0])
+        for comp in components[1:]:
+            mod = getattr(mod, comp)
+        return mod
 
-    def __call__(self, line, *args, **kwargs):
-        self.output_channel.send("{}\n".format(line))
+    @tracer
+    def createProcessor(self, path, output_channel):
+        klass = self.import_module(path)
+        return klass(output_channel)
+
+
 
 if __name__ == "__main__":
-    print(sys.argv)
     inRange = InRange()
     outRange = OutRange()
     input_channel_parameters = [p for p in sys.argv if inRange(p)]
-    print("Input parameters: {}".format(input_channel_parameters))
     output_channel_parameters = [p for p in sys.argv if outRange(p)]
-    print("Output parameters: {}".format(output_channel_parameters))
     channelFactory = ChannelFactory()
     input_channel = channelFactory.createInputChannel(input_channel_parameters)
     output_channel = channelFactory.createOutputChannel(output_channel_parameters)
+    processor = channelFactory.createProcessor('pipes.processors.passthrough.PassThrough', output_channel)
     output_channel.send("This is a test of the output channel")
     print("type 'exit' to end test")
     pass_through = PassThrough(output_channel)
