@@ -1,0 +1,17 @@
+{"event_id": 1, "originating_event_id": 0, "command": "create_entity", "name": "Client A"}
+{"event_id": 2, "originating_event_id": 0, "command": "create_entity", "name": "Node 1"}
+{"event_id": 3, "originating_event_id": 0, "command": "create_entity", "name": "Node 2"}
+{"event_id": 4, "originating_event_id": 0, "command": "create_entity", "name": "Node 3"}
+{"event_id": 5, "originating_event_id": 0, "command": "create_entity", "name": "Client B"}
+{"event_id": 6, "originating_event_id": 1, "command": "set_key_value", "type": "float", "precision": "3", "field_name": "N1.T", "value": 42.003}
+{"event_id": 7, "originating_event_id": 2, "command": "set_key_value", "type": "float", "precision": "3", "field_name": "N2.T", "value": 41.999}
+{"event_id": 8, "originating_event_id": 3, "command": "set_key_value", "type": "float", "precision": "3", "field_name": "N3.T", "value": 42.0}
+{"event_id": 9, "originating_event_id": 4, "command": "send_message", "from_entity": "cA", "delay": 1, "message": "x=1", "to_entity": "n1"}
+{"event_id": 10, "originating_event_id": 5, "command": "send_message", "from_entity": "n1", "delay": 1, "message": "ok", "to_entity": "cA"}
+{"event_id": 11, "originating_event_id": 6, "command": "send_message", "from_entity": "n1", "delay": 1, "message": "x=1", "to_entity": "n3"}
+{"event_id": 12, "originating_event_id": 7, "command": "send_message", "from_entity": "n1", "delay": 4, "message": "x=1", "to_entity": "n2"}
+{"event_id": 13, "originating_event_id": 8, "command": "set_state", "name": "cB", "state": "idle", "delay": 2}
+{"event_id": 14, "originating_event_id": 9, "command": "send_message", "from_entity": "cB", "delay": 1, "message": "x+=1", "to_entity": "n3"}
+{"event_id": 15, "originating_event_id": 10, "command": "send_message", "from_entity": "n3", "delay": 1, "message": "ok", "to_entity": "cB"}
+{"event_id": 16, "originating_event_id": 11, "command": "send_message", "from_entity": "n3", "delay": 1, "message": "x+=1", "to_entity": "n1"}
+{"event_id": 17, "originating_event_id": 11, "command": "send_message", "from_entity": "n3", "delay": 1, "message": "x+=1", "to_entity": "n2"}

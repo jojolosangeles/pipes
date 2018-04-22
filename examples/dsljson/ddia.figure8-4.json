@@ -1,0 +1,13 @@
+{"event_id": 1, "originating_event_id": 0, "command": "create_entity", "name": "Lock service"}
+{"event_id": 2, "originating_event_id": 0, "command": "create_entity", "name": "Client 1"}
+{"event_id": 3, "originating_event_id": 0, "command": "create_entity", "name": "Client 2"}
+{"event_id": 4, "originating_event_id": 0, "command": "create_entity", "name": "Storage"}
+{"event_id": 5, "originating_event_id": 1, "command": "send_message", "from_entity": "c1", "delay": 1, "message": "get lease", "to_entity": "ls"}
+{"event_id": 6, "originating_event_id": 2, "command": "send_message", "from_entity": "ls", "delay": 1, "message": "ok", "to_entity": "c1"}
+{"event_id": 7, "originating_event_id": 3, "command": "set_state", "name": "ls", "state": "lock held by client 1", "delay": 3}
+{"event_id": 8, "originating_event_id": 4, "command": "send_message", "from_entity": "ls", "delay": 1, "message": "least expired", "to_entity": "c1"}
+{"event_id": 9, "originating_event_id": 5, "command": "set_state", "name": "ls", "state": "lock held by client_2", "delay": 4}
+{"event_id": 10, "originating_event_id": 6, "command": "set_state", "name": "c1", "state": "stop-the-world GC pause", "delay": 6}
+{"event_id": 11, "originating_event_id": 7, "command": "send_message", "from_entity": "c2", "delay": 1, "message": "get_lease", "to_entity": "ls"}
+{"event_id": 12, "originating_event_id": 8, "command": "send_message", "from_entity": "c2", "delay": 1, "message": "write data", "to_entity": "storage"}
+{"event_id": 13, "originating_event_id": 9, "command": "send_message", "from_entity": "c1", "delay": 1, "message": "write data", "to_entity": "storage"}
