@@ -8,7 +8,6 @@ class Pipe:
 
     Since the receiving is forever, the 'line_processor' used to process the
     received line of text, sends on the outgoing channel."""
-
     def __init__(self, incoming_channel, outgoing_channel, line_processor):
         """
         :param incoming_channel:  implements 'receive(line_processor)' which
@@ -35,22 +34,23 @@ class ListExtractor:
             if not value in self.terminating_words:
                 return True
             else:
-                self.collecting_sequence = False
+                self.collecting_sequence = (value == self.start_word)
         elif value == self.start_word:
             self.collecting_sequence = True
         return False
 
+
 if __name__ == "__main__":
-    inputParameterExtractor = ListExtractor("input", [ "processor", "output" ])
-    outputParameterExtractor = ListExtractor("output", [ "processor", "input" ])
-    processorParameterExtractor = ListExtractor("processor", [ "input", "output" ])
+    all_categories = [ "processor", "input", "output" ]
+    inputParameterExtractor = ListExtractor("input", all_categories)
+    outputParameterExtractor = ListExtractor("output", all_categories)
+    processorParameterExtractor = ListExtractor("processor", all_categories)
     input_channel_parameters = [p for p in sys.argv if inputParameterExtractor(p)]
     output_channel_parameters = [p for p in sys.argv if outputParameterExtractor(p)]
     processor_parameters = [p for p in sys.argv if processorParameterExtractor(p)]
     channelFactory = ChannelFactory()
     input_channel = channelFactory.createInputChannel(input_channel_parameters)
-    output_channel = channelFactory.createOutputChannel(output_channel_parameters)
-    processor = channelFactory.createProcessor(processor_parameters, output_channel)
-    pipe = Pipe(input_channel, output_channel, processor)
+    output_channels = channelFactory.createOutputChannels(output_channel_parameters)
+    processor = channelFactory.createProcessor(processor_parameters, output_channels)
+    pipe = Pipe(input_channel, output_channels, processor)
     pipe.activate()
-    print("test is over")

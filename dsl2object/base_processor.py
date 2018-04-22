@@ -8,6 +8,7 @@ class BaseProcessor:
 
 
 class EchoProcessor(BaseProcessor):
-    def process_line(self, line, line_id, output_channel):
+    def process_line(self, line, line_id, output_channels):
         line = line.strip()
-        output_channel.send(line)
+        for output_channel in output_channels:
+            output_channel.send(line)

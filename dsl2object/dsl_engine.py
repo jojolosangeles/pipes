@@ -24,14 +24,14 @@ class QueueOutputStream:
 
 
 class DSL_Engine:
-    def __init__(self, output_channel):
+    def __init__(self, output_channels):
         self.entity_dsl = EntityDSL()
         self.entity_time_dsl = EntityTimeDSL()
         self.entity_state_dsl = EntityStateDSL()
         self.message_dsl = MessageDSL()
         self.current_line_number = 0
         self.processors = [ self.entity_dsl, self.entity_time_dsl, self.entity_state_dsl, self.message_dsl ]
-        self.output_channel = output_channel
+        self.output_channels = output_channels
 
     def __call__(self, line, *args, **kwargs):
         self.process_line(line)
@@ -40,7 +40,7 @@ class DSL_Engine:
         line_id = self.current_line_number
         self.current_line_number += 1
         for processor in self.processors:
-            processor.process_line(line, line_id, self.output_channel)
+            processor.process_line(line, line_id, self.output_channels)
 
     def process_json(self, json_text):
         pass

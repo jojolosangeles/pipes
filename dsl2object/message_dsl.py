@@ -9,7 +9,7 @@ class MessageDSL(BaseProcessor):
         super()
         self.last_message_received = {}  # "*" for message uses value from here
 
-    def process(self, data, originating_event_id, output_channel):
+    def process(self, data, originating_event_id, output_channels):
         """Convert a list of tokens into a list of instances.
         Syntax we are looking for:
 
@@ -29,11 +29,12 @@ class MessageDSL(BaseProcessor):
             for dest in data[-1].split(","):
                 message_event = MessageEvent(data[0], delay, message, dest, originating_event_id)
                 self.last_message_received[dest] = message
-                output_channel.send(json.dumps(vars(message_event)))
+                for output_channel in output_channels:
+                    output_channel.send(json.dumps(vars(message_event)))
         except:
             pass
 
-    def process_line(self, line, originating_event_id, output_channel):
+    def process_line(self, line, originating_event_id, output_channels):
         data = line.split()
         if len(data) >= 3 and data[1][0] == '(':
-            self.process(data, originating_event_id, output_channel)
+            self.process(data, originating_event_id, output_channels)

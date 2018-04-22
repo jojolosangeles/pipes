@@ -1,6 +1,6 @@
 class Tracer:
-    def __init__(self):
-        self.enabled = True
+    def __init__(self, enabled = False):
+        self.enabled = enabled
 
     def __call__(self, f):
         def wrap(*args, **kwargs):

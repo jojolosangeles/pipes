@@ -5,7 +5,7 @@ from pipes.channels.websocket import WebsocketInChannel, WebsocketOutChannel
 from pipes.rabbitmq import RabbitMQ
 from util.tracer import Tracer
 
-tracer = Tracer()
+tracer = Tracer(True)
 
 class UnspecifiedChannel:
     def __init__(self, params):
@@ -47,26 +47,35 @@ class ChannelFactory:
             return UnspecifiedChannel(input_channel_params)
 
     @tracer
+    def createOutputChannels(self, output_channel_parameters):
+        parameter_offset = 0
+        result = []
+        while parameter_offset < len(output_channel_parameters):
+            number_parameters_used, output_channel = self.createOutputChannel(output_channel_parameters[parameter_offset:])
+            result.append(output_channel)
+            parameter_offset += number_parameters_used
+        return result
+
     def createOutputChannel(self, output_channel_parameters):
         channel_type = output_channel_parameters[0]
         if channel_type == "stream":
             if output_channel_parameters[1] == "stdout":
-                return StreamOutChannel(sys.stdout)
+                return 2, StreamOutChannel(sys.stdout)
             elif output_channel_parameters[1] == "file":
-                return StreamOutChannel(open(output_channel_parameters[2], "w"))
+                return 3, StreamOutChannel(open(output_channel_parameters[2], "w"))
         elif channel_type == "rabbitmq":
             host = output_channel_parameters[1]
             queue = output_channel_parameters[2]
-            return RabbitMQ(host, queue)
+            return 3, RabbitMQ(host, queue)
         elif channel_type == "websocket":
             port = int(output_channel_parameters[1])
-            return WebsocketOutChannel(port)
+            return 2, WebsocketOutChannel(port)
         else:
-            return UnspecifiedChannel(output_channel_parameters)
+            return 2, UnspecifiedChannel(output_channel_parameters)
 
     @tracer
-    def createProcessor(self, processor_parameters, output_channel):
+    def createProcessor(self, processor_parameters, output_channels):
         path = processor_parameters[0]
         klass = import_module(path)
-        return klass(output_channel)
+        return klass(output_channels)
 

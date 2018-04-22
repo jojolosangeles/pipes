@@ -1,6 +1,7 @@
 class PassThrough:
-    def __init__(self, output_channel):
-        self.output_channel = output_channel
+    def __init__(self, output_channels):
+        self.output_channels = output_channels
 
     def __call__(self, line, *args, **kwargs):
-        self.output_channel.send("{}\n".format(line))
+        for output_channel in self.output_channels:
+            output_channel.send("{}\n".format(line))
