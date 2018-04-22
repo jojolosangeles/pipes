@@ -1,8 +1,7 @@
 import sys
-
-from pipes.channels.channel_factory import ChannelFactory
 from pipes.processors.passthrough import PassThrough
-
+from dsl2object.dsl_engine import DSL_Engine
+from pipes.channels.channel_factory import ChannelFactory
 
 class Pipe:
     """A Pipe can only receive on an incoming channel, and send on an outgoing channel.
@@ -51,9 +50,7 @@ if __name__ == "__main__":
     channelFactory = ChannelFactory()
     input_channel = channelFactory.createInputChannel(input_channel_parameters)
     output_channel = channelFactory.createOutputChannel(output_channel_parameters)
-    print("processor_parameters={}".format(processor_parameters))
-    #processor = channelFactory.createProcessor(['pipes.processors.passthrough.PassThrough'], output_channel)
     processor = channelFactory.createProcessor(processor_parameters, output_channel)
-    pipe = Pipe(input_channel, output_channel, processor)#PassThrough(output_channel))
+    pipe = Pipe(input_channel, output_channel, processor)
     pipe.activate()
     print("test is over")

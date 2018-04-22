@@ -1,42 +1,11 @@
 import sys
+
+from pipes.channels.stream import StreamInChannel, StreamOutChannel
+from pipes.channels.websocket import WebsocketInChannel, WebsocketOutChannel
 from pipes.rabbitmq import RabbitMQ
-
-class Tracer:
-    def __init__(self):
-        self.enabled = True
-
-    def __call__(self, f):
-        def wrap(*args, **kwargs):
-            if self.enabled:
-                print("{}{}".format(f.__name__, args[1:]))
-            return f(*args, **kwargs)
-        return wrap
+from util.tracer import Tracer
 
 tracer = Tracer()
-
-class StreamInChannel:
-    """This channel implements 'incoming_channel' protocol, 'receive(line_processor'.
-    This is for any stream, like stdin or a file.
-        """
-    def __init__(self, stream):
-        self.stream = stream
-
-    def receive(self, line_processor):
-        while True:
-            line = self.stream.readline().strip()
-            line_processor(line)
-            if line == "exit":
-                break
-
-class StreamOutChannel:
-    """This channel implements 'incoming_channel' protocol, 'receive(line_processor'.
-    This is for any stream, like stdin or a file.
-        """
-    def __init__(self, stream):
-        self.stream = stream
-
-    def send(self, message):
-        self.stream.write(message)
 
 class UnspecifiedChannel:
     def __init__(self, params):
@@ -58,8 +27,6 @@ def import_module(name):
     return mod
 
 class ChannelFactory:
-    def __init__(self):
-        pass
 
     @tracer
     def createInputChannel(self, input_channel_params):
@@ -73,6 +40,9 @@ class ChannelFactory:
             host = input_channel_params[1]
             queue = input_channel_params[2]
             return RabbitMQ(host, queue)
+        elif channel_type == "websocket":
+            port = int(input_channel_params[1])
+            return WebsocketInChannel(port)
         else:
             return UnspecifiedChannel(input_channel_params)
 
@@ -88,6 +58,9 @@ class ChannelFactory:
             host = output_channel_parameters[1]
             queue = output_channel_parameters[2]
             return RabbitMQ(host, queue)
+        elif channel_type == "websocket":
+            port = int(output_channel_parameters[1])
+            return WebsocketOutChannel(port)
         else:
             return UnspecifiedChannel(output_channel_parameters)
 

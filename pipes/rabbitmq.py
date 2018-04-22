@@ -38,9 +38,8 @@ class RabbitMQ:
          this instance, and pass in the text line received.
         :return: N/A
         """
-        print(" [x] Received %r" % body)
-        print("calling line_callback")
-        self.line_callback(body.decode("utf-8"))
+        print(" [x] Received '{}'".format(body.decode("utf-8").strip()))
+        self.line_callback(body.decode("utf-8").strip())
 
     def send(self, message):
         print("RabbitMQ should send: {}".format(message))
@@ -57,6 +56,7 @@ class RabbitMQ:
         connection.close()
 
     def receive(self, line_processor=None):
+        print("WTF, I AM IN MY FUCKING QUEUE RECEIVING MESSAGES")
         self.line_callback = line_processor
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host))
         channel = connection.channel()
