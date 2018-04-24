@@ -106,3 +106,6 @@ class Entity(MessageCounter):
 
     def time(self):
         return self.clock.time()
+
+    def __repr__(self):
+        return self.name

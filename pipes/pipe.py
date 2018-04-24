@@ -54,3 +54,4 @@ if __name__ == "__main__":
     processor = channelFactory.createProcessor(processor_parameters, output_channels)
     pipe = Pipe(input_channel, output_channels, processor)
     pipe.activate()
+    processor.terminate()

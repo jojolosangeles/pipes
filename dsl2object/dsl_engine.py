@@ -36,6 +36,9 @@ class DSL_Engine:
     def __call__(self, line, *args, **kwargs):
         self.process_line(line)
 
+    def terminate(self):
+        pass
+
     def process_line(self, line):
         line_id = self.current_line_number
         self.current_line_number += 1

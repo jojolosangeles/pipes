@@ -5,6 +5,9 @@ import sys
 # I don't understand why
 from pipes.processors.passthrough import PassThrough
 from dsl2object.dsl_engine import DSL_Engine
+from timelines.timeline_engine import TimelineEngine
+
+# these are used
 from pipes.channels.stream import StreamInChannel, StreamOutChannel
 from pipes.channels.websocket import WebsocketInChannel, WebsocketOutChannel
 from pipes.rabbitmq import RabbitMQ
