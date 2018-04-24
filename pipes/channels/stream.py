@@ -2,7 +2,7 @@ import sys
 
 from util.tracer import Tracer
 
-tracer = Tracer(True)
+tracer = Tracer(False)
 
 class StreamInChannel:
     """This channel implements 'incoming_channel' protocol, 'receive(line_processor'.
@@ -12,9 +12,9 @@ class StreamInChannel:
         self.stream = stream
 
     def receive(self, line_processor):
-        while True:
-            line = self.stream.readline().strip()
-            print("StreamInChannel received: {}".format(line))
+        for line in self.stream:
+            line = line.strip()
+            #print("StreamInChannel received: {}".format(line))
             line_processor(line)
             if line == "exit" or (self.stream == sys.stdin and line == ""):
                 break
@@ -29,6 +29,5 @@ class StreamOutChannel:
     @tracer
     def send(self, message):
         self.stream.write(message)
-        if self.stream == sys.stdout:
-            self.stream.write("\n")
+        self.stream.write("\n")
         self.stream.flush()

@@ -42,7 +42,7 @@ class RabbitMQ:
         self.line_callback(body.decode("utf-8").strip())
 
     def send(self, message):
-        print("RabbitMQ should send: {}".format(message))
+        #print("RabbitMQ should send: {}".format(message))
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host))
         channel = connection.channel()
 

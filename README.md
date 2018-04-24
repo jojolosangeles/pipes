@@ -24,4 +24,13 @@ The options for processing:
 
 ## The goal
 
-Take DSL input, and output a complete visualization
+Take DSL input, and output a complete visualization by passing through
+a series of independently running processes.
+
+For the DSL, the sequence is:
+
+file -> json events -> timelines for each entity -> visualization data (files)
+
+## Configuration
+
+- input

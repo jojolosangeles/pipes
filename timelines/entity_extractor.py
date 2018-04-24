@@ -4,6 +4,6 @@ class EntityExtractor:
         self.entities = []
         self.entityFactory = entityFactory
 
-    def process_json(self, json_data):
+    def __call__(self, json_data, *args, **kwargs):
         if json_data['command'] == "create_entity":
             self.entities.append(self.entityFactory.createEntity(json_data['name']))

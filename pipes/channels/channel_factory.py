@@ -1,11 +1,16 @@
 import sys
 
+# TODO these are 'not used' but they are loaded using 'import_module'
+# which needs these present, otherwise I get an error saying they don't exist.
+# I don't understand why
+from pipes.processors.passthrough import PassThrough
+from dsl2object.dsl_engine import DSL_Engine
 from pipes.channels.stream import StreamInChannel, StreamOutChannel
 from pipes.channels.websocket import WebsocketInChannel, WebsocketOutChannel
 from pipes.rabbitmq import RabbitMQ
 from util.tracer import Tracer
 
-tracer = Tracer(True)
+tracer = Tracer(False)
 
 class UnspecifiedChannel:
     def __init__(self, params):

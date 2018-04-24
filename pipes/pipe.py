@@ -1,6 +1,5 @@
 import sys
-from pipes.processors.passthrough import PassThrough
-from dsl2object.dsl_engine import DSL_Engine
+
 from pipes.channels.channel_factory import ChannelFactory
 
 class Pipe:
@@ -41,7 +40,8 @@ class ListExtractor:
 
 
 if __name__ == "__main__":
-    all_categories = [ "processor", "input", "output" ]
+    all_categories = [ "yaml", "processor", "input", "output" ]
+    yamlFile = ListExtractor("yaml", all_categories)
     inputParameterExtractor = ListExtractor("input", all_categories)
     outputParameterExtractor = ListExtractor("output", all_categories)
     processorParameterExtractor = ListExtractor("processor", all_categories)
