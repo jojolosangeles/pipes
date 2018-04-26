@@ -18,8 +18,10 @@ class EntityStateDSL(BaseProcessor):
             s = re.search( r'\((\d+)\)(.*)', data[0], re.M|re.I)
             try:
                 delay = int(s.group(1))
-                entity = s.group(2)
-                stateEvent = StateEvent(entity, ' '.join(data[1:]), delay, line_id)
+                entity = data[-1]
+                data[0] = s.group(2)
+                state = ' '.join(data[:-1])
+                stateEvent = StateEvent(entity, state, delay, line_id)
                 for output_channel in output_channels:
                     output_channel.send(json.dumps(vars(stateEvent)))
             except:

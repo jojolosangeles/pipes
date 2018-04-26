@@ -3,7 +3,7 @@
 {"event_id": 3, "originating_event_id": 0, "command": "create_entity", "name": "Follower 1"}
 {"event_id": 4, "originating_event_id": 0, "command": "create_entity", "name": "Follower 2"}
 {"event_id": 5, "originating_event_id": 1, "command": "send_message", "from_entity": "u1", "delay": 1, "message": "update users set picture_url='me-new.jpg' where user_id=1234", "to_entity": "l"}
-{"event_id": 6, "originating_event_id": 2, "command": "set_state", "name": "waiting", "state": "for follower's ok l", "delay": 2}
+{"event_id": 6, "originating_event_id": 2, "command": "set_state", "name": "l", "state": "waiting for follower's ok", "delay": 2}
 {"event_id": 7, "originating_event_id": 3, "command": "send_message", "from_entity": "l", "delay": 1, "message": "data change", "to_entity": "f1"}
 {"event_id": 8, "originating_event_id": 4, "command": "send_message", "from_entity": "l", "delay": 3, "message": "data change", "to_entity": "f2"}
 {"event_id": 9, "originating_event_id": 5, "command": "send_message", "from_entity": "f1", "delay": 1, "message": "ok", "to_entity": "l"}

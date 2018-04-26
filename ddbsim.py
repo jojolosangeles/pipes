@@ -91,6 +91,9 @@ class MonitoredStream:
         self.stream = stream
         self.id = id
 
+    def send(self, s):
+        self.write(s)
+
     def write(self, s):
         self.stream.write(s)
         self.stream.write("\n")

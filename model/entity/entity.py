@@ -1,6 +1,5 @@
 from model.time.clock import Clock
 
-
 class EntityFactory:
     """Create entities, and keep track of all entities created."""
     def __init__(self):

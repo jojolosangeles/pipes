@@ -31,8 +31,10 @@ class MessageDSL(BaseProcessor):
                 self.last_message_received[dest] = message
                 for output_channel in output_channels:
                     output_channel.send(json.dumps(vars(message_event)))
-        except:
-            pass
+        except Exception as ex:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
 
     def process_line(self, line, originating_event_id, output_channels):
         data = line.split()

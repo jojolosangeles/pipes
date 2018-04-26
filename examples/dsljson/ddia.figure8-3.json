@@ -10,7 +10,7 @@
 {"event_id": 10, "originating_event_id": 5, "command": "send_message", "from_entity": "n1", "delay": 1, "message": "ok", "to_entity": "cA"}
 {"event_id": 11, "originating_event_id": 6, "command": "send_message", "from_entity": "n1", "delay": 1, "message": "x=1", "to_entity": "n3"}
 {"event_id": 12, "originating_event_id": 7, "command": "send_message", "from_entity": "n1", "delay": 4, "message": "x=1", "to_entity": "n2"}
-{"event_id": 13, "originating_event_id": 8, "command": "set_state", "name": "cB", "state": "idle", "delay": 2}
+{"event_id": 13, "originating_event_id": 8, "command": "set_state", "name": "idle", "state": "cB", "delay": 2}
 {"event_id": 14, "originating_event_id": 9, "command": "send_message", "from_entity": "cB", "delay": 1, "message": "x+=1", "to_entity": "n3"}
 {"event_id": 15, "originating_event_id": 10, "command": "send_message", "from_entity": "n3", "delay": 1, "message": "ok", "to_entity": "cB"}
 {"event_id": 16, "originating_event_id": 11, "command": "send_message", "from_entity": "n3", "delay": 1, "message": "x+=1", "to_entity": "n1"}
