@@ -4,6 +4,17 @@ from model.entity.entity import EntityFactory
 from timelines.entity_extractor import EntityExtractor
 from timelines.timeline_extractor import TimelineExtractor
 
+
+class Timeline(object):
+
+    def __init__(self, entities, events):
+        self.entities = [ entity.name for entity in entities ]
+        self.events = events
+
+    def toJSON(self):
+        return '{{ "entities": {}, "timeline": [{}] }}'.format(
+            json.dumps(self.entities), ", ".join([ e.toJSON() for e in self.events ]))
+
 class TimelineEngine:
     def __init__(self, output_channels):
         self.output_channels = output_channels
@@ -13,12 +24,24 @@ class TimelineEngine:
 
     def __call__(self, line, *args, **kwargs):
         json_data = json.loads(line)
-        print(json_data)
         self.entityExtractor(json_data)
-        print("ENTITIES={}".format(self.entityExtractor.entities))
         self.timelineExtractor(json_data)
-        print("TIMELINE={}\n".format(self.timelineExtractor.latest_entity_time))
 
     def terminate(self):
-        print(self.entityExtractor.entities)
-        print(self.timelineExtractor.latest_entity_time)
+        """Build a JSON object to represent the timeline sequence.
+
+        {
+          "entities": [ ... comma separated list of entity names ... ],
+          "timeline": [
+              ... for each timeline entry ...
+               event {
+                 "from_entity_name": "...name...",
+                 "to_entity_name": "...name...",
+                 "start_time": "..t1..",
+                 "end_time": "..t2.."
+               }, ..
+            ]
+        }"""
+
+        result = Timeline(self.entityExtractor.entities, self.timelineExtractor.time_spanning_events)
+        self.output_channels.send(result.toJSON())

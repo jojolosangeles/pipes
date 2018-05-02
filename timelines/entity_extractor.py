@@ -13,5 +13,6 @@ class EntityExtractor:
 
     def __call__(self, json_data, *args, **kwargs):
         if json_data['command'] == self.ENTITY_COMMAND:
-            self.entities.append(self.entityFactory.createEntity(json_data['name']))
+            new_entity = self.entityFactory.createEntity(json_data['name'])
+            self.entities.append(new_entity)
             self.abbreviations[self.abbreviate(json_data['name'])] = json_data['name']

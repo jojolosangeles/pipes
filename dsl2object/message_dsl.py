@@ -29,8 +29,7 @@ class MessageDSL(BaseProcessor):
             for dest in data[-1].split(","):
                 message_event = MessageEvent(data[0], delay, message, dest, originating_event_id)
                 self.last_message_received[dest] = message
-                for output_channel in output_channels:
-                    output_channel.send(json.dumps(vars(message_event)))
+                output_channels.send(json.dumps(vars(message_event)))
         except Exception as ex:
             template = "An exception of type {0} occurred. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)

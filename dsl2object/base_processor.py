@@ -10,5 +10,4 @@ class BaseProcessor:
 class EchoProcessor(BaseProcessor):
     def process_line(self, line, line_id, output_channels):
         line = line.strip()
-        for output_channel in output_channels:
-            output_channel.send(line)
+        output_channels.send(line)

@@ -1,17 +1,6 @@
 from dsl2object.entity_dsl import EntityDSL, EntityTimeDSL, EntityStateDSL
 from dsl2object.message_dsl import MessageDSL
-import sys
-
 from pipes.rabbitmq import RabbitMQ
-
-
-class FakeOutputStream:
-    def __init__(self):
-        pass
-
-    @classmethod
-    def write(self, s):
-        sys.stdout.write(s)
 
 class QueueOutputStream:
     def __init__(self, queueName):
@@ -20,8 +9,6 @@ class QueueOutputStream:
     def write(self, s):
         rmq = RabbitMQ('localhost',self.queueName)
         rmq.send(s)
-        #sys.stdout.write("Put in queue '{}': '{}'".format(self.queueName, s))
-
 
 class DSL_Engine:
     def __init__(self, output_channels):

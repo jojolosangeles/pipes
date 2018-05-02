@@ -34,6 +34,18 @@ def import_module(name):
         mod = getattr(mod, comp)
     return mod
 
+class OutputChannels:
+
+    def __init__(self):
+        self.channels = []
+
+    def append(self, channel):
+        self.channels.append(channel)
+
+    def send(self, message):
+        for channel in self.channels:
+            channel.send(message)
+
 class ChannelFactory:
 
     @tracer
@@ -57,7 +69,7 @@ class ChannelFactory:
     @tracer
     def createOutputChannels(self, output_channel_parameters):
         parameter_offset = 0
-        result = []
+        result = OutputChannels()
         while parameter_offset < len(output_channel_parameters):
             number_parameters_used, output_channel = self.createOutputChannel(output_channel_parameters[parameter_offset:])
             result.append(output_channel)

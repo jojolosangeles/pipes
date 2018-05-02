@@ -22,8 +22,7 @@ class EntityStateDSL(BaseProcessor):
                 data[0] = s.group(2)
                 state = ' '.join(data[:-1])
                 stateEvent = StateEvent(entity, state, delay, line_id)
-                for output_channel in output_channels:
-                    output_channel.send(json.dumps(vars(stateEvent)))
+                output_channels.send(json.dumps(vars(stateEvent)))
             except:
                 pass
 
@@ -38,9 +37,7 @@ class EntityTimeDSL(BaseProcessor):
     def process(self, data, originating_event_id, output_channels):
         """Process data array containing[ name, type, precision, value ]."""
         float_event = FloatEvent(data[0], data[1], data[2], data[3], originating_event_id)
-        for output_channel in output_channels:
-            output_channel.send(json.dumps(vars(float_event)))
-
+        output_channels.send(json.dumps(vars(float_event)))
 
     def process_line(self, line, line_id, output_channels):
         data = line.split("=")
@@ -76,8 +73,7 @@ class EntityDSL(BaseProcessor):
         """Process a line of text, if it's not for this processor, there are no entities to process."""
         for entity in self.process(line.split()):
             entity_event = EntityEvent(entity.full_name(), line_id)
-            for output_channel in output_channels:
-                output_channel.send(json.dumps(vars(entity_event)))
+            output_channels.send(json.dumps(vars(entity_event)))
 
     def createInstances(self, data):
         """Break list into comma separated sections, each of those becomes one or more entity instances."""
