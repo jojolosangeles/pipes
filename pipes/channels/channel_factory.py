@@ -1,8 +1,9 @@
-import sys
+import sys, os
 
 # TODO these are 'not used' but they are loaded using 'import_module'
 # which needs these present, otherwise I get an error saying they don't exist.
 # I don't understand why
+from pipes.channels.gist import GistOutChannel
 from pipes.processors.passthrough import PassThrough
 from dsl2object.dsl_engine import DSL_Engine
 from timelines.timeline_engine import TimelineEngine
@@ -45,6 +46,7 @@ class OutputChannels:
     def send(self, message):
         for channel in self.channels:
             channel.send(message)
+
 
 class ChannelFactory:
 
@@ -90,6 +92,9 @@ class ChannelFactory:
         elif channel_type == "websocket":
             port = int(output_channel_parameters[1])
             return 2, WebsocketOutChannel(port)
+        elif channel_type == "gist":
+            filename = output_channel_parameters[1]
+            return 2, GistOutChannel(filename, os.environ['GIST_USER'], os.environ['GIST_PASSWORD'])
         else:
             return 2, UnspecifiedChannel(output_channel_parameters)
 
