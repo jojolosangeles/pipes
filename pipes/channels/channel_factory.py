@@ -94,7 +94,8 @@ class ChannelFactory:
             return 2, WebsocketOutChannel(port)
         elif channel_type == "gist":
             filename = output_channel_parameters[1]
-            return 2, GistOutChannel(filename, os.environ['GIST_USER'], os.environ['GIST_PASSWORD'])
+            count, gist_id_channel = self.createOutputChannel(output_channel_parameters[2:])
+            return 2 + count, GistOutChannel(gist_id_channel, filename, os.environ['GIST_USER'], os.environ['GIST_PASSWORD'])
         else:
             return 2, UnspecifiedChannel(output_channel_parameters)
 
