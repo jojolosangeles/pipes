@@ -3,8 +3,9 @@ c1 (1)get lease ls
 ls (1)ok c1
 (3)ls lock held by client 1
 ls (1)least expired c1
-(4)ls lock held by client_2
+(4)ls lock held by client 2
 (6)c1 stop-the-world GC pause
 c2 (1)get_lease ls
 c2 (1)write data storage
 c1 (1)write data storage
+(1)s kaboom

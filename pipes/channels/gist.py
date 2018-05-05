@@ -8,5 +8,5 @@ class GistOutChannel:
         self.password = password
 
     def send(self, message):
-        r = requests.post('https://api.github.com/gists',json.dumps({'files':{self.filename:{"content":message}}}),auth=requests.auth.HTTPBasicAuth(self.username, self.password))
+        r = requests.post('https://api.github.com/gists',json.dumps({'description': self.filename, 'files':{self.filename:{"content":message}}}),auth=requests.auth.HTTPBasicAuth(self.username, self.password))
         self.gist_id_channel.send(r.json()['html_url'])
