@@ -2,14 +2,10 @@ entities Lock service, Client 1/2, Storage
 c1 (1)get lease ls
 ls (1)ok c1
 (3)ls lock held by client 1
-(6)c1 stop-the-world GC pause
-sync ls,c2,s
 ls (1)least expired c1
-c2 (1)get lease ls
-ls (1)ok c2
 (4)ls lock held by client 2
-c2 (1)write data s
-s (1)ok c2
-sync c1
-c1 (1)write data s
-(1)s kaboom
+(6)c1 stop-the-world GC pause
+c2 (1)get_lease ls
+c2 (1)write data storage
+c1 (1)write data storage
+s (1)rejected old token c1

@@ -1,4 +1,4 @@
-from dsl2object.entity_dsl import EntityDSL, EntityTimeDSL, EntityStateDSL
+from dsl2object.entity_dsl import EntityDSL, EntityTimeDSL, EntityStateDSL, SyncDSL
 from dsl2object.message_dsl import MessageDSL
 from pipes.rabbitmq import RabbitMQ
 
@@ -16,8 +16,9 @@ class DSL_Engine:
         self.entity_time_dsl = EntityTimeDSL()
         self.entity_state_dsl = EntityStateDSL()
         self.message_dsl = MessageDSL()
+        self.sync_dsl = SyncDSL()
         self.current_line_number = 0
-        self.processors = [ self.entity_dsl, self.entity_time_dsl, self.entity_state_dsl, self.message_dsl ]
+        self.processors = [ self.entity_dsl, self.entity_time_dsl, self.entity_state_dsl, self.message_dsl, self.sync_dsl ]
         self.output_channels = output_channels
 
     def __call__(self, line, *args, **kwargs):

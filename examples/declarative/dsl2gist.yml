@@ -1,0 +1,16 @@
+# Pipe #1, takes folder with DSL files, for each file, creates JSON
+# Pipe #2, for each JSON file,
+#               converts to timeline JSON,
+#               creates gist
+#               saves gist URl in output folder
+#
+pipe:
+  input: /Users/jojo/PycharmProjects/ddbsim/data/*
+  processor: dsl2object.dsl_engine.DSL_Engine
+  output: /Users/jojo/PycharmProjects/ddbsim/dsljson/*.json
+pipe:
+  input: /Users/jojo/PycharmProjects/ddbsim/dsljson/*
+  processor: timelines.timeline_engine.TimelineEngine
+  output:
+    gist: *
+    output: /Users/jojo/PycharmProjects/ddbsim/dslgist/*

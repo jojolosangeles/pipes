@@ -1,5 +1,5 @@
 from dsl2object.base_processor import BaseProcessor
-from dsl2object.events import FloatEvent, EntityEvent, StateEvent
+from dsl2object.events import FloatEvent, EntityEvent, StateEvent, SyncEvent
 from dsl2object.instance import InstanceFactory
 import json
 import itertools
@@ -10,6 +10,12 @@ def is_not_digit(s):
         return not str.isdigit(s)
     except:
         return True
+
+class SyncDSL(BaseProcessor):
+    def process_line(self, line, line_id, output_channels):
+        data = line.split()
+        if data[0] == SyncEvent.COMMAND_KEY:
+            output_channels.send(json.dumps(vars(SyncEvent(data[1]))))
 
 class EntityStateDSL(BaseProcessor):
     def process_line(self, line, line_id, output_channels):

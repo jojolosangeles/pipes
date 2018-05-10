@@ -38,7 +38,8 @@ class TimelineEngine:
                  "from_entity_name": "...name...",
                  "to_entity_name": "...name...",
                  "start_time": "..t1..",
-                 "end_time": "..t2.."
+                 "end_time": "..t2..",
+                 "message": "..whatever.."
                }, ..
             ]
         }"""
