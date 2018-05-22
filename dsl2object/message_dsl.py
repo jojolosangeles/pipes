@@ -1,7 +1,8 @@
-from dsl2object.base_processor import BaseProcessor
-from dsl2object.events import MessageEvent
 import json
 import re
+
+from dsl2object.base_processor import BaseProcessor, skip_empty_lines
+from dsl2object.events import MessageEvent
 
 class MessageDSL(BaseProcessor):
     """Handles the part of the DSL that creates messages."""
@@ -35,6 +36,7 @@ class MessageDSL(BaseProcessor):
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
+    @skip_empty_lines
     def process_line(self, line, originating_event_id, output_channels):
         data = line.split()
         if len(data) >= 3 and data[1][0] == '(':

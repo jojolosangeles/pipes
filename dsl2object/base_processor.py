@@ -1,16 +1,12 @@
 class BaseProcessor:
-    def set_streams(self, output_stream):
-        self.output_stream = output_stream
-        self.line_id = 0
-
     def receive_line(self):
         self.line_id += 1
 
 def skip_empty_lines(f):
-    def checkLine(line, *args, **kwargs):
+    def checkLine(self, line, line_id, output_channels):
         line = line.strip()
         if len(line) > 0:
-            f(line)
+            f(self, line, line_id, output_channels)
     return checkLine
 
 class EchoProcessor(BaseProcessor):

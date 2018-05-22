@@ -3,13 +3,12 @@ c1 (1)get lease ls
 ls (1)ok c1
 (3)ls lock held by client 1
 (6)c1 stop-the-world GC pause
-sync ls,c2,s
+sync ls,c2,s -- out of these three, take latest time, set all to that time
 ls (1)least expired c1
 c2 (1)get lease ls
 ls (1)ok c2
 (4)ls lock held by client 2
 c2 (1)write data s
 s (1)ok c2
-sync c1
 c1 (1)write data s
 (1)s kaboom

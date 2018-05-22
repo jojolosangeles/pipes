@@ -1,3 +1,4 @@
+from dsl2object.base_processor import skip_empty_lines
 from dsl2object.entity_dsl import EntityDSL, EntityTimeDSL, EntityStateDSL, SyncDSL
 from dsl2object.message_dsl import MessageDSL
 from pipes.rabbitmq import RabbitMQ

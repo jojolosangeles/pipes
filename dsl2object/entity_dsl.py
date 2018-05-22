@@ -1,9 +1,11 @@
-from dsl2object.base_processor import BaseProcessor
+import itertools
+import json
+import re
+
+from dsl2object.base_processor import BaseProcessor, skip_empty_lines
 from dsl2object.events import FloatEvent, EntityEvent, StateEvent, SyncEvent
 from dsl2object.instance import InstanceFactory
-import json
-import itertools
-import re
+
 
 def is_not_digit(s):
     try:
@@ -12,12 +14,14 @@ def is_not_digit(s):
         return True
 
 class SyncDSL(BaseProcessor):
+    @skip_empty_lines
     def process_line(self, line, line_id, output_channels):
         data = line.split()
         if data[0] == SyncEvent.COMMAND_KEY:
             output_channels.send(json.dumps(vars(SyncEvent(data[1]))))
 
 class EntityStateDSL(BaseProcessor):
+    @skip_empty_lines
     def process_line(self, line, line_id, output_channels):
         data = line.split()
         if len(data) >= 2:
@@ -44,6 +48,7 @@ class EntityTimeDSL(BaseProcessor):
         float_event = FloatEvent(data[0], data[1], data[2], data[3], originating_event_id)
         output_channels.send(json.dumps(vars(float_event)))
 
+    @skip_empty_lines
     def process_line(self, line, line_id, output_channels):
         data = line.split("=")
         if len(data) == 2:
@@ -74,6 +79,7 @@ class EntityDSL(BaseProcessor):
         else:
             return []
 
+    @skip_empty_lines
     def process_line(self, line, line_id, output_channels):
         """Process a line of text, if it's not for this processor, there are no entities to process."""
         for entity in self.process(line.split()):
