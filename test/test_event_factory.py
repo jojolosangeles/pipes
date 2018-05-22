@@ -25,6 +25,6 @@ def test_set_state_event(event_factory, abbreviations):
     assert(event.__class__.__name__ == "SetStateEvent")
 
 def test_sync_event(event_factory, abbreviations):
-    json_data = { "sync": "sync" }
+    json_data = { "sync": "sync", "entities": "1,2,3" }
     event = event_factory.create_instance("sync", json_data)
     assert(event.__class__.__name__ == "SyncEvent")

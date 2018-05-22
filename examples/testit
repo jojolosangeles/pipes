@@ -1,0 +1,2 @@
+./test_dsl2gistdata.sh
+./check_results.sh
