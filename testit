@@ -1,2 +1,3 @@
 set -x
 python3 -m pytest -v
+./examples/test_dsl2gistdata.sh

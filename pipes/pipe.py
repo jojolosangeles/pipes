@@ -37,21 +37,3 @@ class ListExtractor:
         elif value == self.start_word:
             self.collecting_sequence = True
         return False
-
-
-if __name__ == "__main__":
-    all_categories = [ "yaml", "processor", "input", "output" ]
-    yamlFile = ListExtractor("yaml", all_categories)
-    inputParameterExtractor = ListExtractor("input", all_categories)
-    outputParameterExtractor = ListExtractor("output", all_categories)
-    processorParameterExtractor = ListExtractor("processor", all_categories)
-    input_channel_parameters = [p for p in sys.argv if inputParameterExtractor(p)]
-    output_channel_parameters = [p for p in sys.argv if outputParameterExtractor(p)]
-    processor_parameters = [p for p in sys.argv if processorParameterExtractor(p)]
-    channelFactory = ChannelFactory()
-    input_channel = channelFactory.createInputChannel(input_channel_parameters)
-    output_channels = channelFactory.createOutputChannels(output_channel_parameters)
-    processor = channelFactory.createProcessor(processor_parameters, output_channels)
-    pipe = Pipe(input_channel, output_channels, processor)
-    pipe.activate()
-    processor.terminate()
